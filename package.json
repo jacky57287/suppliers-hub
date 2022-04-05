@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.5.10",
     "@aws-amplify/auth": "^4.3.10",
     "@babel/runtime": "^7.15.4",
     "@brainhubeu/react-carousel": "^2.0.4",
@@ -12,6 +13,7 @@
     "@emotion/react": "^11.7.1",
     "@emotion/server": "latest",
     "@emotion/styled": "^11.6.0",
+    "@habx/apollo-multi-endpoint-link": "^2.7.0",
     "@mui/icons-material": "^5.2.5",
     "@mui/lab": "^5.0.0-alpha.64",
     "@mui/material": "^5.2.8",
@@ -32,6 +34,7 @@
     "firebase": "^9.0.2",
     "formik": "^2.2.9",
     "formik-material-ui-pickers": "^1.0.0-alpha.1",
+    "graphql": "^16.3.0",
     "moment": "^2.29.1",
     "next": "latest",
     "next-seo": "^4.28.1",

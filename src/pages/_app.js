@@ -11,6 +11,18 @@ import AppLocaleProvider from '../@crema/utility/AppLocaleProvider';
 import FirebaseAuthProvider from '../@crema/services/auth/firebase/FirebaseAuthProvider';
 import AuthRoutes from '../@crema/utility/AuthRoutes';
 import {useStore} from '../redux/store'; // Client-side cache, shared for the whole session of the user in the browser.
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+  HttpLink,
+  ApolloLink,
+} from '@apollo/client';
+import {createHttpLink} from '@apollo/client';
+import {MultiAPILink} from '@habx/apollo-multi-endpoint-link';
+import resellers from '../content/resellers.json';
 
 import '../@crema/services/index';
 import '../shared/vendors/index.css';
@@ -23,26 +35,38 @@ export default function MyApp(props) {
   const {Component, emotionCache = clientSideEmotionCache, pageProps} = props;
   const store = useStore(pageProps.initialReduxState);
 
+  const client = new ApolloClient({
+    link: ApolloLink.from([
+      new MultiAPILink({
+        endpoints: resellers,
+        createHttpLink: () => createHttpLink(),
+      }),
+    ]),
+    cache: new InMemoryCache(),
+  });
+
   return (
-    <CacheProvider value={emotionCache}>
-      <AppContextProvider>
-        <Provider store={store}>
-          <AppThemeProvider>
-            <AppStyleProvider>
-              <AppLocaleProvider>
-                <FirebaseAuthProvider>
-                  <AuthRoutes>
-                    <CssBaseline />
-                    <AppPageMeta />
-                    <Component {...pageProps} />
-                  </AuthRoutes>
-                </FirebaseAuthProvider>
-              </AppLocaleProvider>
-            </AppStyleProvider>
-          </AppThemeProvider>
-        </Provider>
-      </AppContextProvider>
-    </CacheProvider>
+    <ApolloProvider client={client}>
+      <CacheProvider value={emotionCache}>
+        <AppContextProvider>
+          <Provider store={store}>
+            <AppThemeProvider>
+              <AppStyleProvider>
+                <AppLocaleProvider>
+                  <FirebaseAuthProvider>
+                    <AuthRoutes>
+                      <CssBaseline />
+                      <AppPageMeta />
+                      <Component {...pageProps} />
+                    </AuthRoutes>
+                  </FirebaseAuthProvider>
+                </AppLocaleProvider>
+              </AppStyleProvider>
+            </AppThemeProvider>
+          </Provider>
+        </AppContextProvider>
+      </CacheProvider>
+    </ApolloProvider>
   );
 }
 

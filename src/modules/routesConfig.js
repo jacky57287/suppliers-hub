@@ -13,6 +13,7 @@ import {
   BsCart4,
   BsChatDots,
   BsCurrencyBitcoin,
+  BsHouse,
   BsQuestionDiamond,
 } from 'react-icons/bs';
 import {DiHtml5Multimedia} from 'react-icons/di';
@@ -30,6 +31,14 @@ import {VscTable, VscTools} from 'react-icons/vsc';
 import {AiOutlineLayout, AiOutlineUnorderedList} from 'react-icons/ai';
 
 const routesConfig = [
+  {
+    id: 'dashboard',
+    title: 'Dashboard',
+    messageId: 'sidebar.app.dashboard',
+    type: 'item',
+    icon: <BsHouse />,
+    url: '/dashboards',
+  },
   {
     id: 'app',
     title: 'Application',
