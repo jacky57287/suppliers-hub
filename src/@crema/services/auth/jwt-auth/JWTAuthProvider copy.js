@@ -7,16 +7,6 @@ import {
   FETCH_SUCCESS,
 } from 'shared/constants/ActionTypes';
 import jwtAxios, {setAuthToken} from './index';
-import {useQuery, gql, useMutation} from '@apollo/client';
-
-const LOGIN_MUTATION = gql`
-  mutation ($identifier: String!, $password: String!)
-  @api(contextKey: "apiName") {
-    login(input: {identifier: $identifier, password: $password}) {
-      jwt
-    }
-  }
-`;
 
 const JWTAuthContext = createContext();
 const JWTAuthActionsContext = createContext();
@@ -26,10 +16,6 @@ export const useJWTAuth = () => useContext(JWTAuthContext);
 export const useJWTAuthActions = () => useContext(JWTAuthActionsContext);
 
 const JWTAuthAuthProvider = ({children}) => {
-  const [login] = useMutation(LOGIN_MUTATION, {
-    context: {apiName: 'systemEndPoint'},
-  });
-
   const [firebaseData, setJWTAuthData] = useState({
     user: null,
     isAuthenticated: false,
@@ -75,45 +61,16 @@ const JWTAuthAuthProvider = ({children}) => {
   const signInUser = async ({email, password}) => {
     dispatch({type: FETCH_START});
     try {
-      // const {data} = await jwtAxios.post('auth', {email, password});
-      // localStorage.setItem('token', data.token);
-      // setAuthToken(data.token);
-      // const res = await jwtAxios.get('/auth');
-      // setJWTAuthData({
-      //   user: res.data,
-      //   isAuthenticated: true,
-      //   isLoading: false,
-      // });
-      // dispatch({type: FETCH_SUCCESS});
-      login({
-        variables: {
-          identifier: email,
-          password: password,
-        },
-      })
-        .then((resp) => {
-          setAuthToken(resp.data.login.jwt);
-          // const res = await jwtAxios.get('/auth');
-          setJWTAuthData({
-            user: {},
-            isAuthenticated: true,
-            isLoading: false,
-          });
-          dispatch({type: FETCH_SUCCESS});
-
-          console.log('resp', resp);
-        })
-        .catch((error) => {
-          setJWTAuthData({
-            ...firebaseData,
-            isAuthenticated: false,
-            isLoading: false,
-          });
-          dispatch({
-            type: FETCH_ERROR,
-            payload: error?.response?.data?.error || 'Something went wrong',
-          });
-        });
+      const {data} = await jwtAxios.post('auth', {email, password});
+      localStorage.setItem('token', data.token);
+      setAuthToken(data.token);
+      const res = await jwtAxios.get('/auth');
+      setJWTAuthData({
+        user: res.data,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+      dispatch({type: FETCH_SUCCESS});
     } catch (error) {
       setJWTAuthData({
         ...firebaseData,

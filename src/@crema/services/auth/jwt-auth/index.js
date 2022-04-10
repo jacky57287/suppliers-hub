@@ -13,6 +13,7 @@ jwtAxios.interceptors.response.use(
       console.log('Need to logout user');
       // store.dispatch({type: LOGOUT});
     }
+    console.log('err', err);
     return Promise.reject(err);
   },
 );
